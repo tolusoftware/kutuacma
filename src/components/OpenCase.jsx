@@ -1,207 +1,167 @@
-import React, { useState, useRef, useEffect, useContext } from 'react';
-import './OpenCase.css'; // CSS dosyasını ayrıca oluşturacağım
+import React, { useState, useContext, useEffect } from 'react';
+import './OpenCase.css';
 import { getGameData, startGame } from '../services/userServices';
 import { UserContext } from '../contexts/UserContext';
-
-const RARITY_COLORS = {
-  blue: '#4b69ff',
-  purple: '#8847ff',
-  pink: '#d32ce6',
-  red: '#eb4b4b',
-  gold: '#ffd700',
-};
-
-const ROLLER_VISIBLE = 7; // Ortada 7 kutucuk görünsün
-const BOX_WIDTH = 140; // px
+import Dialog from './Dialog';
 
 export default function OpenCase() {
-  const { getScratchConfig,id:userid } = useContext(UserContext);
-  const [rewards, setRewards] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const { id, getScratchConfig, user, setUser } = useContext(UserContext);
+  const [rollerItems, setRollerItems] = useState([]);
+  const [rolled, setRolled] = useState("rolling");
+  const [loading, setLoading] = useState(false);
+  const [opened, setOpened] = useState(false);
+  const [otherrewards, setOtherRewards] = useState([]);
+  const [showDialog, setShowDialog] = useState(false);
+  const [showRewardsDialog, setShowRewardsDialog] = useState(false);
+  const [winReward, setWinReward] = useState(null);
 
-  const [step, setStep] = useState('closed'); // 'closed', 'rolling', 'result'
-  const [selectedReward, setSelectedReward] = useState(null);
-  const [rollerRewards, setRollerRewards] = useState([]);
-  const [rollerPos, setRollerPos] = useState(0);
-  const [isRolling, setIsRolling] = useState(false);
-  const [finalIndex, setFinalIndex] = useState(0);
-  const [backendReward, setBackendReward] = useState(null);
-  const [animationDone, setAnimationDone] = useState(false);
-  const rollerRef = useRef();
-
-  // Ödülleri çek
+  // Alınabilecek ödülleri sayfa yüklenince çek
   useEffect(() => {
     const fetchRewards = async () => {
-        
-      setLoading(true);
-      setError(null);
       try {
-        if (!getScratchConfig || !getScratchConfig.spinWheelId) {
-          setRewards([]);
-          setLoading(false);
-          return;
-        }
-        const gameData = await getGameData(getScratchConfig.spinWheelId);
-        console.log("gameData:", gameData);
-        let rewardList = [];
-        let segments = Array.isArray(gameData) ? gameData : (Array.isArray(gameData?.segments) ? gameData.segments : []);
-        if (segments.length > 0) {
-          if (typeof segments[0] === 'string') {
-            rewardList = segments.map(str => ({
-              name: str,
-              rarity: 'blue',
-            }));
-          } else if (typeof segments[0] === 'object' && segments[0] !== null) {
-            rewardList = segments.map(item => ({
-              name: item.name || item.title || 'Ödül',
-              rarity: item.rarity || 'blue',
-            }));
+        if (!getScratchConfig?.spinWheelId) return;
+        const data = await getGameData(getScratchConfig.spinWheelId);
+        console.log("API Response:", data);
+        
+        // API yanıtını kontrol et ve uygun şekilde işle
+        if (data && typeof data === 'object') {
+          if (Array.isArray(data)) {
+            setOtherRewards(data);
+          } else if (Array.isArray(data.segments)) {
+            setOtherRewards(data.segments);
+          } else if (Array.isArray(data.rewards)) {
+            setOtherRewards(data.rewards);
           } else {
-            rewardList = segments.map(item => ({
-              name: String(item),
-              rarity: 'blue',
-            }));
+            console.warn("API response format is not as expected:", data);
+            setOtherRewards([]);
           }
+        } else {
+          console.warn("Invalid API response:", data);
+          setOtherRewards([]);
         }
-        console.log("rewardList:", rewardList);
-        setRewards(rewardList);
-      } catch (err) {
-        setError('Ödüller yüklenirken hata oluştu.');
-      } finally {
-        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching rewards:", error);
+        setOtherRewards([]);
       }
     };
     fetchRewards();
-    // eslint-disable-next-line
   }, [getScratchConfig]);
 
-  // Kutuya tıklayınca veya butona basınca animasyonu başlat
-  const handleStart = () => {
-    if (!rewards || rewards.length === 0) return;
-
-    setIsRolling(true);
-    setStep('rolling');
-    setSelectedReward(null);
-    setBackendReward(null);
-    setAnimationDone(false);
-
-    // 1. Animasyon için rollerRewards'ı rewards ile doldur
-    const rewardsArr = [...rewards, ...rewards, ...rewards, ...rewards]; // 4 kez tekrarla
-    setRollerRewards(rewardsArr);
-
-    // 2. API çağrısını başlat
-    startGame(getScratchConfig.spinWheelId, userid)
-      .then(result => {
-        const win = result?.data?.win;
-        setBackendReward(win);
-        
-        // 5 saniye sonra sonucu göster ama animasyon devam etsin
-        setTimeout(() => {
-          setStep('result');
-          // Backend'den gelen ödülü bul
-          const winReward = rewards.find(r => r.name === win);
-          setSelectedReward(winReward);
-        }, 5000);
-      })
-      .catch(() => {
-        setBackendReward(null);
-        setError('Ödül alınırken hata oluştu.');
-      });
-  };
-
-  // Roller animasyonu
-  useEffect(() => {
-    if (step !== 'rolling' || !isRolling) return;
-
-    const rollerElement = document.querySelector('.roller-strip-inner');
-    if (!rollerElement) return;
-
-    rollerElement.style.animation = 'none';
-    rollerElement.style.animation = 'rolling 1.5s linear';
-
-    return () => {
-      if (rollerElement) {
-        rollerElement.style.animation = 'none';
-      }
-    };
-  }, [step, isRolling]);
-
-  // Sonucu gösterme
-  useEffect(() => {
-    if (animationDone && backendReward !== null) {
-      // Sadece backend'den dönen ödülü göster
-      let winReward = rewards.find(r => r.name === backendReward);
-      console.log("winReward:", winReward);
-      setSelectedReward(winReward);
-      setStep('result');
-      setAnimationDone(false); // tekrar açma için
+  const generate = async () => {
+    setLoading(true);
+    // 1. Ödülleri çek
+    const data = await getGameData(getScratchConfig.spinWheelId);
+    let rewards = Array.isArray(data) ? data : (Array.isArray(data?.segments) ? data.segments : []);
+    if (!rewards.length) {
+      setLoading(false);
+      return;
     }
-  }, [animationDone, backendReward, rewards]);
+    // 2. Kazananı çek
+    const result = await startGame(getScratchConfig.spinWheelId, id);
+    const win = result?.data?.win;
+    setWinReward(win);
+    // 3. 101 kutuluk bir şerit oluştur
+    const temp = [];
+    const winningIndex = 80;
+    for (let i = 0; i < 101; i++) {
+      let rewardName = rewards[Math.floor(Math.random() * rewards.length)];
+      temp.push({
+        name: rewardName,
+        id: i
+      });
+    }
 
-  const handleRestart = () => {
-    setStep('closed');
-    setSelectedReward(null);
-    setRollerRewards([]);
-    setRollerPos(0);
-    setIsRolling(false);
+
+
+    temp[winningIndex].name = win;
+    console.log("temp", temp);
+    setRollerItems(temp);
+    console.log("Animasyon BAŞLANGICI: Gösterge altındaki index:", winningIndex, "Ad:", temp[winningIndex].name);
+    setTimeout(() => {
+      setRolled(win);
+      setLoading(false);
+      console.log("Animasyon BİTİŞİ: Gösterge altındaki index:", winningIndex, "Ad:", temp[winningIndex].name);
+      setShowDialog(true);
+    }, 8700);
   };
-
-  if (loading) {
-    return <div className="csgo-case-container"><div>Ödüller yükleniyor...</div></div>;
-  }
-  if (error) {
-    return <div className="csgo-case-container"><div>{error}</div></div>;
-  }
-  if (!rewards || rewards.length === 0) {
-    return <div className="csgo-case-container"><div>Bu kutuda hiç ödül yok.</div></div>;
-  }
 
   return (
-    <div className="csgo-case-container">
-      {(step === 'closed') && (
+    <div>
+      {!opened ? (
+        <div>
+          <img src="/kutu.png" alt="Kutu" onClick={() => setOpened(true)} style={{ cursor: "pointer" }} />
+        </div>
+      ) : (
         <>
-          <div className="case-top-area">
-            <div className="case-box-static">
-              <img src="/kutu.png" alt="Kutu" className="case-image" />
-              <div className="case-title">Bravo Case</div>
-            </div>
-            <button className="continue-btn" onClick={handleStart}>Continue</button>
-          </div>
-          <div className="case-items-area">
-            <div className="case-items-title">Items that might be in this case:</div>
-            <div className="case-items-grid">
-              {rewards.map((r, i) => (
-                <div key={i} className="case-item-box" style={{ background: RARITY_COLORS[r.rarity] }}>
-                  <span className="case-item-name">{r.name}</span>
+          <div className="general-container">
+            <div className="raffle-roller">
+              <div className="raffle-roller-holder">
+                <div
+                  className="raffle-roller-container"
+                  style={{ marginLeft: rollerItems.length > 0 ? "-6800px" : "0px" }}
+                >
+                  {rollerItems.map((item, index) => (
+                    <div
+                      key={index}
+                      className={`item class_red_item ${item.winning ? "winning-item" : ""}`}
+                      style={{ display: "flex", alignItems: "center", justifyContent: "center", fontWeight: "bold", fontSize: 18 }}
+                    >
+                      {item.name}
+                    </div>
+                  ))}
                 </div>
-              ))}
+                <div className="indicator-line"></div>
+              </div>
             </div>
           </div>
+          <center>
+            <div className="button-container">
+              <button className="open-case-btn" onClick={generate} disabled={loading}>
+                {loading ? "Yükleniyor..." : "Başla"}
+              </button>
+              <button className="info-btn" onClick={() => setShowRewardsDialog(true)}>
+                <span style={{ color: '#fff', fontSize: '1.4rem', fontWeight: 'bold' }}>?</span>
+              </button>
+            </div>
+          </center>
+          <br />
+          <Dialog
+            isOpen={showDialog}
+            onClose={() => {
+              setShowDialog(false);
+              setOpened(false);
+              setRollerItems([]);
+              setRolled("rolling");
+              setLoading(false);
+              if (user && typeof user.spin_count === 'number' && typeof setUser === 'function') {
+                setUser({ ...user, spin_count: Math.max(0, user.spin_count - 1) });
+              }
+            }}
+            message={winReward ? `Kazandığınız ödül: ${winReward}` : ''}
+            type="win"
+            actionButtonText="Ödülü Al!"
+            title="Tebrikler!"
+          />
+          <Dialog
+            isOpen={showRewardsDialog}
+            onClose={() => setShowRewardsDialog(false)}
+            type="rewards"
+            title="Ödüller"
+            variant="small"
+          >
+            <div className="modern-prize-list">
+              {otherrewards && otherrewards.length > 0 ? (
+                otherrewards.map((reward, i) => (
+                  <div key={i} className="modern-prize-item">
+                    {reward.name || reward}
+                  </div>
+                ))
+              ) : (
+                <div>Ödül bulunamadı</div>
+              )}
+            </div>
+          </Dialog>
         </>
-      )}
-      {step === 'rolling' && (
-        <div className="case-rolling-roller">
-          <div className="roller-strip-outer">
-            <div className={`roller-strip-inner ${isRolling ? 'rolling' : ''}`}>
-              {rollerRewards.map((r, i) => (
-                <div key={i} className="roller-reward-box" style={{ background: RARITY_COLORS[r.rarity], width: BOX_WIDTH }}>
-                  <span className="roller-reward-name">{r.name}</span>
-                </div>
-              ))}
-            </div>
-            <div className="roller-indicator">▼</div>
-          </div>
-        </div>
-      )}
-      {step === 'result' && selectedReward && (
-        <div className="case-result">
-          <div className="result-label">Kazandığın Ödül</div>
-          <div className="result-reward" style={{ background: RARITY_COLORS[selectedReward.rarity] }}>
-            {selectedReward.name}
-          </div>
-          <button className="restart-btn" onClick={handleRestart}>Tekrar Aç</button>
-        </div>
       )}
     </div>
   );

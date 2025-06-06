@@ -18,7 +18,6 @@ export const UserProvider = ({ children, id }) => {
 
     const getGameConfig = async () => {
         try {
-            console.log("api game id",config.apigameid);
             
             const response = await getConfig(config.apigameid);
 
@@ -49,7 +48,7 @@ export const UserProvider = ({ children, id }) => {
     };
 
     return (
-        <UserContext.Provider value={{ user, isUser, userHistory, isLogin, setIsLogin, refreshUser,id,getScratchConfig }}>
+        <UserContext.Provider value={{ user, setUser, isUser, userHistory, isLogin, setIsLogin, refreshUser, id, getScratchConfig }}>
             {children}
         </UserContext.Provider>
     );
