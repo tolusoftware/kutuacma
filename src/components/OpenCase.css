@@ -32,7 +32,7 @@ body {
   max-width: 999999999999999999px;
   height: 100px;
   background: #191726;
-  margin-left: 0;
+  margin-left: calc(-80 * 90px - 42.5px + 450px); /* 90px: 85+5, 42.5: 85/2, 450: 900/2 */
   transition: all 8s cubic-bezier(.08,1,0,1);
   display: flex;
 }
@@ -153,6 +153,7 @@ img {
   }
 
   .raffle-roller-holder {
+    width: 400px;
     height: 80px;
   }
 
@@ -199,6 +200,10 @@ img {
   .info-btn i {
     font-size: 1.2rem;
   }
+
+  .raffle-roller-container {
+    margin-left: calc(-80 * 75px - 35px + 200px); /* 75px: 70+5, 35: 70/2, 200: 400/2 */
+  }
 }
 
 @media (max-width: 480px) {
@@ -208,6 +213,7 @@ img {
   }
 
   .raffle-roller-holder {
+    width: 350px;
     height: 60px;
   }
 
@@ -254,6 +260,10 @@ img {
 
   .info-btn i {
     font-size: 1.1rem;
+  }
+
+  .raffle-roller-container {
+    margin-left: calc(-80 * 58px - 27.5px + 150px); /* 58px: 55+3, 27.5: 55/2, 150: 300/2 */
   }
 }
 
