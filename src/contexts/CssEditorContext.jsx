@@ -2,41 +2,36 @@ import React, { createContext, useState, useEffect } from 'react';
 
 // Varsayılan stil değişkenleri App.css :root tan alınacak veya burada tutulacak
 const initialCssVariables = {
+  // Genel arka plan ve başlıklar
   '--general-bg-gradient': 'linear-gradient(135deg, #17171A 0%, #2B0A50 100%)',
   '--general-bg-color': '#17171A',
-  '--header-background': 'linear-gradient(135deg, #3a3a3d 0%, #18181b 100%)',
-  '--profile-background': 'linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05))',
-  '--profile-text-color': 'white',
-  '--profile-icon-color': '#FFCC00',
-  '--profile-border-color': 'rgba(255, 255, 255, 0.15)',
-  '--shake-rights-background': 'linear-gradient(135deg, rgba(255, 204, 0, 0.2), rgba(255, 165, 0, 0.2))',
-  '--shake-rights-text-color': 'white',
-  '--shake-rights-icon-color': '#FFCC00',
-  '--shake-rights-border-color': 'rgba(255, 204, 0, 0.3)',
-  '--rights-button-background': 'linear-gradient(135deg, #FFCC00, #FFA500)',
-  '--rights-button-text-color': '#2B0A50',
-  '--rights-button-icon-color': '#2B0A50',
-  '--rights-button-border-color': 'rgba(255, 204, 0, 0.5)',
-  '--history-button-background': 'linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05))',
-  '--history-button-text-color': 'white',
-  '--history-button-icon-color': 'white',
-  '--history-button-border-color': 'rgba(255, 255, 255, 0.2)',
   '--title-color': '#FFFFFF',
   '--title-span-color': '#FFCC00',
   '--title-shadow': '0 4px 8px rgba(0, 0, 0, 0.3)',
-  '--instruction-bg': 'linear-gradient(135deg, rgba(255, 204, 0, 0.3), rgba(255, 165, 0, 0.3))',
-  '--instruction-text-color': 'white',
-  '--instruction-border-color': 'rgba(255, 204, 0, 0.2)',
-  '--button-gradient': 'linear-gradient(45deg, #FFCC00 0%, #FFA500 100%)',
-  '--button-text-color': '#2B0A50',
-  '--button-border-radius': '30px',
-  '--button-shadow': '0 8px 15px rgba(0, 0, 0, 0.2)',
-  '--button-border-color': 'rgba(255, 204, 0, 0.5)',
-  // SVG renk değişkenleri
-  '--scratch-svg-color-1': '#0087d6',
-  '--scratch-svg-color-2': '#09ed5c',
-  '--scratch-svg-color-3': '#ff0a0a',
-  // Dialog değişkenleri
+
+  // Oyun başlat butonu
+  '--button-gradient': 'linear-gradient(90deg, #ffd700 0%, #eb4b4b 100%)',
+  '--button-text-color': '#23272e',
+  '--button-border-color': '#ffd700',
+  '--button-shadow': '0 4px 24px #0004, 0 0 16px #ffd70055',
+
+  // Info butonu
+  '--info-btn-bg': 'linear-gradient(135deg, #23243a 60%, #191726 100%)',
+  '--info-btn-color': '#ffd700',
+  '--info-btn-border': '#ffd700',
+
+  // Raffle roller holder ve container
+  '--roller-holder-border': '#3c3759',
+  '--roller-container-bg': 'linear-gradient(135deg, #23243a 60%, #191726 100%)',
+  '--roller-indicator-bg': '#d16266',
+
+  // Kutular (item)
+  '--roller-item-color': '#fff',
+  '--roller-item-border': '#70677c',
+  '--roller-item-bg': 'linear-gradient(135deg, #14202b 0%, #23243a 100%)',
+  '--roller-item-red-border': '#EB4B4B',
+
+  // Dialog
   '--dialog-background': 'linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.85))',
   '--dialog-text-color': '#2B0A50',
   '--dialog-border-color': 'rgba(255, 204, 0, 0.5)',
@@ -76,33 +71,7 @@ const initialCssVariables = {
   '--dialog-close-button-hover-color': '#333',
   '--dialog-top-line-height': '4px',
   '--dialog-top-line-gradient': 'linear-gradient(90deg, var(--dialog-title-color, #FFCC00), var(--dialog-close-button-hover, #FFA500))',
-  // Dialog durumları için özel renkler
-  '--dialog-success-icon-color': '#34d399',
-  '--dialog-error-icon-color': '#f87171',
-  '--dialog-warning-icon-color': '#fbbf24',
-  '--dialog-success-button-background': 'linear-gradient(135deg, #34d399, #10b981)',
-  '--dialog-error-button-background': 'linear-gradient(135deg, #f87171, #ef4444)',
-  '--dialog-warning-button-background': 'linear-gradient(135deg, #fbbf24, #f59e0b)',
-  '--dialog-success-button-shadow': '0 4px 12px rgba(52, 211, 153, 0.2)',
-  '--dialog-error-button-shadow': '0 4px 12px rgba(248, 113, 113, 0.2)',
-  '--dialog-warning-button-shadow': '0 4px 12px rgba(251, 191, 36, 0.2)',
-  // Kart bileşeni için varsayılan CSS değişkenleri
-  '--card-width': '150px',
-  '--card-height': '150px',
-  '--card-border-radius': '12px',
-  '--card-box-shadow': '0 8px 16px rgba(0,0,0,0.1)',
-  '--card-hover-transform': '-2px',
-  '--card-hover-shadow': '0 12px 20px rgba(0,0,0,0.15)',
-  '--card-content-bg': 'linear-gradient(135deg, #ffffff, #f5f5f5)',
-  '--reward-text-size': '28px',
-  '--reward-text-gradient': 'linear-gradient(45deg, #2196f3, #3f51b5)',
-  '--reward-text-shadow': '2px 2px 4px rgba(0,0,0,0.1)',
-  '--scratch-area-gradient': 'linear-gradient(135deg, #3f51b5, #2196f3)',
-  '--question-mark-color': 'rgba(255, 255, 255, 0.2)',
-  '--question-mark-size': '80px',
-  '--corner-decoration-color': 'rgba(255, 255, 255, 0.1)',
-  '--corner-decoration-width': '2px',
-  // Diğer değişkenler buraya eklenebilir
+  // ... diğer dialog ve tema değişkenleri ...
 };
 
 export const CssEditorContext = createContext({

@@ -3,9 +3,12 @@ import './OpenCase.css';
 import { getGameData, startGame } from '../services/userServices';
 import { UserContext } from '../contexts/UserContext';
 import Dialog from './Dialog';
+import AdminLogin from './AdminLogin';
+import CssEditor from './CssEditor';
+import { CssEditorContext } from '../contexts/CssEditorContext';
 
-const ITEM_WIDTH = 85; // .item genişliği (px)
-const ITEM_MARGIN_LEFT = 5; // .item sol margin (px)
+
+
 const WINNING_INDEX = 80;
 
 // Responsive değerleri JS'de state olarak tut
@@ -21,7 +24,7 @@ const getResponsiveValues = () => {
 };
 
 export default function OpenCase() {
-  const { id, getScratchConfig, user, setUser } = useContext(UserContext);
+  const { id, getScratchConfig, user, setUser, isLogin } = useContext(UserContext);
   const [rollerItems, setRollerItems] = useState([]);
   const [rolled, setRolled] = useState("rolling");
   const [loading, setLoading] = useState(false);
@@ -33,6 +36,25 @@ export default function OpenCase() {
   const holderRef = useRef(null);
   const [containerWidth, setContainerWidth] = useState(900); // varsayılan genişlik
   const [responsive, setResponsive] = useState(getResponsiveValues());
+  const [isAdminLogin, setIsAdminLogin] = useState(false);
+  const { cssVariables } = useContext(CssEditorContext);
+
+
+
+  const adminRoute =  () => {
+    return window.location.pathname.includes("/admin");
+  }
+
+  const handleAdminLogin = () => {
+    setIsAdminLogin(false);
+};
+
+
+  useEffect(() => {
+    if (adminRoute()) {
+      setIsAdminLogin(true);
+    }
+  }, []);
 
   // Responsive değerleri güncelle
   useEffect(() => {
@@ -60,7 +82,7 @@ export default function OpenCase() {
         if (!getScratchConfig?.spinWheelId) return;
         const data = await getGameData(getScratchConfig.spinWheelId);
         console.log("API Response:", data);
-        
+
         // API yanıtını kontrol et ve uygun şekilde işle
         if (data && typeof data === 'object') {
           if (Array.isArray(data)) {
@@ -111,11 +133,9 @@ export default function OpenCase() {
     temp[WINNING_INDEX].name = win;
     console.log("temp", temp);
     setRollerItems(temp);
-    console.log("Animasyon BAŞLANGICI: Gösterge altındaki index:", WINNING_INDEX, "Ad:", temp[WINNING_INDEX].name);
     setTimeout(() => {
       setRolled(win);
       setLoading(false);
-      console.log("Animasyon BİTİŞİ: Gösterge altındaki index:", WINNING_INDEX, "Ad:", temp[WINNING_INDEX].name);
       setShowDialog(true);
     }, 8700);
   };
@@ -155,11 +175,28 @@ export default function OpenCase() {
           </div>
           <center>
             <div className="button-container">
-              <button className="open-case-btn" onClick={generate} disabled={loading}>
+              <button
+                className="open-case-btn"
+                onClick={generate}
+                disabled={loading}
+                style={{
+                  background: cssVariables['--button-gradient'],
+                  color: cssVariables['--button-text-color'],
+                  border: `2px solid ${cssVariables['--button-border-color']}`
+                }}
+              >
                 {loading ? "Yükleniyor..." : "Başla"}
               </button>
-              <button className="info-btn" onClick={() => setShowRewardsDialog(true)}>
-                <span style={{ color: '#fff', fontSize: '1.4rem', fontWeight: 'bold' }}>?</span>
+              <button
+                className="info-btn"
+                onClick={() => setShowRewardsDialog(true)}
+                style={{
+                  background: cssVariables['--info-btn-bg'],
+                  color: cssVariables['--info-btn-color'],
+                  border: `2px solid ${cssVariables['--info-btn-border']}`
+                }}
+              >
+                <span style={{ color: cssVariables['--info-btn-color'], fontSize: '1.4rem', fontWeight: 'bold' }}>?</span>
               </button>
             </div>
           </center>
@@ -202,6 +239,9 @@ export default function OpenCase() {
           </Dialog>
         </>
       )}
+      {isAdminLogin && (<AdminLogin onLogin={() => handleAdminLogin(false)} onClose={() => setIsAdminLogin(false)} />)}
+      {isLogin && (<CssEditor />)}
+
     </div>
   );
 }

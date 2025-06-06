@@ -94,7 +94,7 @@ const Dialog = ({ isOpen, onClose, message, type = 'success', actionButtonText =
 
             <style jsx>{`
                 .dialog-overlay {
-                    position: fixed;
+                    position: absolute;
                     top: 0;
                     left: 0;
                     right: 0;

@@ -24,15 +24,15 @@ body {
   width: 100%;
   overflow: hidden;
   border-radius: 2px;
-  border: 1px solid #3c3759;
+  border: 1px solid var(--roller-holder-border, #3c3759);
 }
 
 .raffle-roller-container {
   width: 9999999999999999999px;
   max-width: 999999999999999999px;
   height: 100px;
-  background: #191726;
-  margin-left: calc(-80 * 90px - 42.5px + 450px); /* 90px: 85+5, 42.5: 85/2, 450: 900/2 */
+  background: var(--roller-container-bg, #191726);
+  margin-left: 0;
   transition: all 8s cubic-bezier(.08,1,0,1);
   display: flex;
 }
@@ -44,7 +44,7 @@ body {
   width: 5px;
   height: 100%;
   left: 50%;
-  background: #d16266;
+  background: var(--roller-indicator-bg, #d16266);
 }
 
 .item {
@@ -53,16 +53,16 @@ body {
   margin: 4px 0px 0.5px 5px;
   width: 85px;
   height: 88px;
-  border: 1px solid #70677c;
-  color: white;
-  background: #14202b;
+  border: 1px solid var(--roller-item-border, #70677c);
+  color: var(--roller-item-color, white);
+  background: var(--roller-item-bg, #14202b);
   background-size: 100%;
   background-repeat: no-repeat;
   background-position: center;
 }
 
 .class_red_item {
-  border-bottom: 4px solid #EB4B4B;
+  border-bottom: 4px solid var(--roller-item-red-border, #EB4B4B);
 }
 
 img {
@@ -100,7 +100,6 @@ img {
   border: none;
   border-radius: 12px;
   cursor: pointer;
-  box-shadow: 0 4px 24px #0004, 0 0 16px #ffd70055;
   letter-spacing: 1.5px;
   text-transform: uppercase;
   transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
@@ -110,7 +109,6 @@ img {
 .open-case-btn:hover:not(:disabled) {
   background: linear-gradient(90deg, #eb4b4b 0%, #ffd700 100%);
   transform: scale(1.05);
-  box-shadow: 0 8px 32px #ffd70099, 0 0 24px #eb4b4b55;
 }
 
 .open-case-btn:disabled {
@@ -133,13 +131,11 @@ img {
   color: #ffd700;
   font-size: 1.2rem;
   cursor: pointer;
-  box-shadow: 0 4px 12px #0004;
   transition: all 0.2s ease;
 }
 
 .info-btn:hover {
   transform: scale(1.1);
-  box-shadow: 0 6px 16px #ffd70044;
 }
 
 .info-btn i {
@@ -153,7 +149,7 @@ img {
   }
 
   .raffle-roller-holder {
-    width: 400px;
+    width: 350px;
     height: 80px;
   }
 

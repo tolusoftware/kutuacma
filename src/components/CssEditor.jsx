@@ -1,9 +1,8 @@
 import React, { useState, useContext, useRef, useEffect } from 'react'
 import { CssEditorContext } from '../contexts/CssEditorContext'
-import { setCss, updateGameUpdates } from '../services/userServices'
+import { setCss } from '../services/userServices'
 import { UserContext } from '../contexts/UserContext'
 import Dialog from './Dialog'
-import config from '../config'
 
 export default function CssEditor() {
   const [showModal, setShowModal] = useState(false)
@@ -24,19 +23,6 @@ export default function CssEditor() {
   const [dialog, setDialog] = useState({ isOpen: false, message: '' });
 
 
-
-    const [rewardTitle, setRewardTitle] = useState('');
-
-
-    const handleSaveRewardTitle = async () => {
-      const response = await updateGameUpdates(getScratchConfig.spinWheelId,rewardTitle,config.apigameid);
-      if(response.success){
-        setDialog({
-          isOpen: true,
-          message: 'Ödül metni başarıyla kaydedildi!'
-        });
-      }
-    }
   // Accordion state
   const [openAccordion, setOpenAccordion] = useState('genel');
   const toggleAccordion = (key) => {
@@ -176,7 +162,7 @@ export default function CssEditor() {
       </div>
       <div className='general-css-editor-right'>
         <button onClick={handleOpenModal}>TASARIM EDİTÖRÜ</button>
-        <button onClick={handleOpenSvgModal}>KAZI KAZAN EDİTÖRÜ</button>
+        <button onClick={handleOpenSvgModal}>KUTU AÇMA EDİTÖRÜ</button>
       </div>
 
       {showModal && (
@@ -327,6 +313,40 @@ export default function CssEditor() {
                             onChange={(e) => handleVariableChange('--title-shadow', e.target.value)}
                           />
                         </div> */}
+
+                        <div className="css-variable-editor">
+                          <label>Oyun Başlat Butonu Shadow</label>
+                          <input
+                            type="color"
+                            value={cssVariables['--button-shadow-color'] || '#ffd700'}
+                            onChange={(e) => handleVariableChange('--button-shadow-color', e.target.value)}
+                          />
+                        </div>
+
+                        <div className="css-variable-editor">
+                          <label>Info Butonu Arka Plan</label>
+                          <input
+                            type="color"
+                            value={cssVariables['--info-btn-bg'] || '#23243a'}
+                            onChange={(e) => handleVariableChange('--info-btn-bg', e.target.value)}
+                          />
+                        </div>
+                        <div className="css-variable-editor">
+                          <label>Info Butonu Yazı Rengi</label>
+                          <input
+                            type="color"
+                            value={cssVariables['--info-btn-color'] || '#ffd700'}
+                            onChange={(e) => handleVariableChange('--info-btn-color', e.target.value)}
+                          />
+                        </div>
+                        <div className="css-variable-editor">
+                          <label>Info Butonu Kenar Rengi</label>
+                          <input
+                            type="color"
+                            value={cssVariables['--info-btn-border'] || '#ffd700'}
+                            onChange={(e) => handleVariableChange('--info-btn-border', e.target.value)}
+                          />
+                        </div>
 
                       </div>
                     </div>
@@ -1035,190 +1055,6 @@ export default function CssEditor() {
                     </div>
                   )}
                 </div>
-                {/* Kazı Kazan Kartı Ayarları */}
-                <div className="accordion-section">
-                  <div className="accordion-title" onClick={() => toggleAccordion('card')}>
-                    <h3>Kazı Kazan Kartı Ayarları</h3>
-                    <span>{openAccordion === 'card' ? '▲' : '▼'}</span>
-                  </div>
-                  {openAccordion === 'card' && (
-                    <div className="accordion-body">
-                      <div className="css-variable-group">
-                        {/* Kart Genel Ayarları */}
-                        <div className="css-variable-editor">
-                          <label>Kart Genişliği</label>
-                          <input
-                            type="text"
-                            value={cssVariables['--card-width'] || '150px'}
-                            onChange={(e) => handleVariableChange('--card-width', e.target.value)}
-                            placeholder="150px"
-                          />
-                        </div>
-                        <div className="css-variable-editor">
-                          <label>Kart Yüksekliği</label>
-                          <input
-                            type="text"
-                            value={cssVariables['--card-height'] || '150px'}
-                            onChange={(e) => handleVariableChange('--card-height', e.target.value)}
-                            placeholder="150px"
-                          />
-                        </div>
-                        <div className="css-variable-editor">
-                          <label>Kart Kenar Yuvarlaklığı</label>
-                          <input
-                            type="text"
-                            value={cssVariables['--card-border-radius'] || '12px'}
-                            onChange={(e) => handleVariableChange('--card-border-radius', e.target.value)}
-                            placeholder="12px"
-                          />
-                        </div>
-                        <div className="css-variable-editor">
-                          <label>Kart Gölgesi</label>
-                          <input
-                            type="text"
-                            value={cssVariables['--card-box-shadow'] || '0 8px 16px rgba(0,0,0,0.1)'}
-                            onChange={(e) => handleVariableChange('--card-box-shadow', e.target.value)}
-                            placeholder="0 8px 16px rgba(0,0,0,0.1)"
-                          />
-                        </div>
-
-                        {/* Kart İçerik Ayarları */}
-                        <div className="css-variable-editor gradient-editor">
-                          <label>Kart İçerik Arka Plan</label>
-                          <div className="gradient-controls">
-                            <div className="color-picker-group">
-                              <span>Renk 1:</span>
-                              <input
-                                type="color"
-                                value={parseGradient(cssVariables['--card-content-bg']).color1}
-                                onChange={(e) => handleGradientChange(
-                                  '--card-content-bg',
-                                  e.target.value,
-                                  parseGradient(cssVariables['--card-content-bg']).color2,
-                                  parseGradient(cssVariables['--card-content-bg']).direction
-                                )}
-                              />
-                            </div>
-                            <div className="color-picker-group">
-                              <span>Renk 2:</span>
-                              <input
-                                type="color"
-                                value={parseGradient(cssVariables['--card-content-bg']).color2}
-                                onChange={(e) => handleGradientChange(
-                                  '--card-content-bg',
-                                  parseGradient(cssVariables['--card-content-bg']).color1,
-                                  e.target.value,
-                                  parseGradient(cssVariables['--card-content-bg']).direction
-                                )}
-                              />
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Ödül Metni Ayarları */}
-                        <div className="css-variable-editor">
-                          <label>Ödül Metin Boyutu</label>
-                          <input
-                            type="text"
-                            value={cssVariables['--reward-text-size'] || '28px'}
-                            onChange={(e) => handleVariableChange('--reward-text-size', e.target.value)}
-                            placeholder="28px"
-                          />
-                        </div>
-                        <div className="css-variable-editor gradient-editor">
-                          <label>Ödül Metin Gradient</label>
-                          <div className="gradient-controls">
-                            <div className="color-picker-group">
-                              <span>Renk 1:</span>
-                              <input
-                                type="color"
-                                value={parseGradient(cssVariables['--reward-text-gradient']).color1}
-                                onChange={(e) => handleGradientChange(
-                                  '--reward-text-gradient',
-                                  e.target.value,
-                                  parseGradient(cssVariables['--reward-text-gradient']).color2,
-                                  parseGradient(cssVariables['--reward-text-gradient']).direction
-                                )}
-                              />
-                            </div>
-                            <div className="color-picker-group">
-                              <span>Renk 2:</span>
-                              <input
-                                type="color"
-                                value={parseGradient(cssVariables['--reward-text-gradient']).color2}
-                                onChange={(e) => handleGradientChange(
-                                  '--reward-text-gradient',
-                                  parseGradient(cssVariables['--reward-text-gradient']).color1,
-                                  e.target.value,
-                                  parseGradient(cssVariables['--reward-text-gradient']).direction
-                                )}
-                              />
-                            </div>
-                          </div>
-                        </div>
-                        <div className="css-variable-editor">
-                          <label>Ödül Metin Gölgesi</label>
-                          <input
-                            type="text"
-                            value={cssVariables['--reward-text-shadow'] || '2px 2px 4px rgba(0,0,0,0.1)'}
-                            onChange={(e) => handleVariableChange('--reward-text-shadow', e.target.value)}
-                            placeholder="2px 2px 4px rgba(0,0,0,0.1)"
-                          />
-                        </div>
-
-                        {/* Kazıma Alanı Ayarları */}
-                        <div className="css-variable-editor gradient-editor">
-                          <label>Kazıma Alanı Gradient</label>
-                          <div className="gradient-controls">
-                            <div className="color-picker-group">
-                              <span>Renk 1:</span>
-                              <input
-                                type="color"
-                                value={parseGradient(cssVariables['--scratch-area-gradient']).color1}
-                                onChange={(e) => handleGradientChange(
-                                  '--scratch-area-gradient',
-                                  e.target.value,
-                                  parseGradient(cssVariables['--scratch-area-gradient']).color2,
-                                  parseGradient(cssVariables['--scratch-area-gradient']).direction
-                                )}
-                              />
-                            </div>
-                            <div className="color-picker-group">
-                              <span>Renk 2:</span>
-                              <input
-                                type="color"
-                                value={parseGradient(cssVariables['--scratch-area-gradient']).color2}
-                                onChange={(e) => handleGradientChange(
-                                  '--scratch-area-gradient',
-                                  parseGradient(cssVariables['--scratch-area-gradient']).color1,
-                                  e.target.value,
-                                  parseGradient(cssVariables['--scratch-area-gradient']).direction
-                                )}
-                              />
-                            </div>
-                          </div>
-                        </div>
-                        <div className="css-variable-editor">
-                          <label>Soru İşareti Rengi</label>
-                          <input
-                            type="color"
-                            value={cssVariables['--question-mark-color'] || 'rgba(255, 255, 255, 0.2)'}
-                            onChange={(e) => handleVariableChange('--question-mark-color', e.target.value)}
-                          />
-                        </div>
-                        <div className="css-variable-editor">
-                          <label>Köşe Süs Rengi</label>
-                          <input
-                            type="color"
-                            value={cssVariables['--corner-decoration-color'] || 'rgba(255, 255, 255, 0.1)'}
-                            onChange={(e) => handleVariableChange('--corner-decoration-color', e.target.value)}
-                          />
-                        </div>
-
-                      </div>
-                    </div>
-                  )}
-                </div>
               </div>
             </div>
           </div>
@@ -1241,132 +1077,157 @@ export default function CssEditor() {
             onTouchStart={(e) => handleMouseDown(e, true)}
           >
             <div className="css-editor-header">
-              <h2>Kazı Kazan Editörü</h2>
+              <h2>Kutu Açma Editörü</h2>
               <button onClick={handleCloseSvgModal}>✕</button>
             </div>
             <div className="css-editor-content">
-              <h3>Kart Ayarları</h3>
-              <div className="css-variable-group">
-                {/* Kazıma Alanı Ayarları */}
-                <div className="css-variable-editor gradient-editor">
-                  <label>Kazıma Alanı Rengi</label>
-                  <div className="gradient-controls">
-                    <div className="color-picker-group">
-                      <span>Renk 1:</span>
-                      <input
-                        type="color"
-                        value={parseGradient(cssVariables['--scratch-area-gradient']).color1}
-                        onChange={(e) => handleGradientChange(
-                          '--scratch-area-gradient',
-                          e.target.value,
-                          parseGradient(cssVariables['--scratch-area-gradient']).color2,
-                          parseGradient(cssVariables['--scratch-area-gradient']).direction
-                        )}
-                      />
-                    </div>
-                    <div className="color-picker-group">
-                      <span>Renk 2:</span>
-                      <input
-                        type="color"
-                        value={parseGradient(cssVariables['--scratch-area-gradient']).color2}
-                        onChange={(e) => handleGradientChange(
-                          '--scratch-area-gradient',
-                          parseGradient(cssVariables['--scratch-area-gradient']).color1,
-                          e.target.value,
-                          parseGradient(cssVariables['--scratch-area-gradient']).direction
-                        )}
-                      />
-                    </div>
+              {/* Kutu Alanı Kenar Rengi ayarı */}
+              <div className="css-variable-editor">
+                <label>Kutu Alanı Kenar Rengi</label>
+                <input
+                  type="color"
+                  value={cssVariables['--roller-holder-border'] || '#3c3759'}
+                  onChange={(e) => handleVariableChange('--roller-holder-border', e.target.value)}
+                />
+              </div>
+              {/* Kutu Alanı Arka Plan (Gradient) ayarı */}
+              <div className="css-variable-editor gradient-editor">
+                <label>Kutu Alanı Arka Plan (Gradient)</label>
+                <div className="gradient-controls">
+                  <div className="color-picker-group">
+                    <span>Renk 1:</span>
+                    <input
+                      type="color"
+                      value={parseGradient(cssVariables['--roller-container-bg']).color1}
+                      onChange={(e) => handleGradientChange(
+                        '--roller-container-bg',
+                        e.target.value,
+                        parseGradient(cssVariables['--roller-container-bg']).color2,
+                        parseGradient(cssVariables['--roller-container-bg']).direction
+                      )}
+                    />
                   </div>
-                </div>
-
-                <div className="css-variable-editor">
-                  <label>Soru İşareti Rengi</label>
-                  <input
-                    type="color"
-                    value={cssVariables['--question-mark-color'] || 'rgba(255, 255, 255, 0.2)'}
-                    onChange={(e) => handleVariableChange('--question-mark-color', e.target.value)}
-                  />
-                </div>
-
-                <div className="css-variable-editor">
-                  <label>Köşe Süs Rengi</label>
-                  <input
-                    type="color"
-                    value={cssVariables['--corner-decoration-color'] || 'rgba(255, 255, 255, 0.1)'}
-                    onChange={(e) => handleVariableChange('--corner-decoration-color', e.target.value)}
-                  />
-                </div>
-
-                <div className="css-variable-editor gradient-editor">
-                  <label>Kart İçerik Arka Plan</label>
-                  <div className="gradient-controls">
-                    <div className="color-picker-group">
-                      <span>Renk 1:</span>
-                      <input
-                        type="color"
-                        value={parseGradient(cssVariables['--card-content-bg']).color1}
-                        onChange={(e) => handleGradientChange(
-                          '--card-content-bg',
-                          e.target.value,
-                          parseGradient(cssVariables['--card-content-bg']).color2,
-                          parseGradient(cssVariables['--card-content-bg']).direction
-                        )}
-                      />
-                    </div>
-                    <div className="color-picker-group">
-                      <span>Renk 2:</span>
-                      <input
-                        type="color"
-                        value={parseGradient(cssVariables['--card-content-bg']).color2}
-                        onChange={(e) => handleGradientChange(
-                          '--card-content-bg',
-                          parseGradient(cssVariables['--card-content-bg']).color1,
-                          e.target.value,
-                          parseGradient(cssVariables['--card-content-bg']).direction
-                        )}
-                      />
-                    </div>
+                  <div className="color-picker-group">
+                    <span>Renk 2:</span>
+                    <input
+                      type="color"
+                      value={parseGradient(cssVariables['--roller-container-bg']).color2}
+                      onChange={(e) => handleGradientChange(
+                        '--roller-container-bg',
+                        parseGradient(cssVariables['--roller-container-bg']).color1,
+                        e.target.value,
+                        parseGradient(cssVariables['--roller-container-bg']).direction
+                      )}
+                    />
                   </div>
-                </div>
-
-                <div className="css-variable-editor gradient-editor">
-                  <label>Ödül Metin Rengi</label>
-                  <div className="gradient-controls">
-                    <div className="color-picker-group">
-                      <span>Renk 1:</span>
-                      <input
-                        type="color"
-                        value={parseGradient(cssVariables['--reward-text-gradient']).color1}
-                        onChange={(e) => handleGradientChange(
-                          '--reward-text-gradient',
-                          e.target.value,
-                          parseGradient(cssVariables['--reward-text-gradient']).color2,
-                          parseGradient(cssVariables['--reward-text-gradient']).direction
-                        )}
-                      />
-                    </div>
-                    <div className="color-picker-group">
-                      <span>Renk 2:</span>
-                      <input
-                        type="color"
-                        value={parseGradient(cssVariables['--reward-text-gradient']).color2}
-                        onChange={(e) => handleGradientChange(
-                          '--reward-text-gradient',
-                          parseGradient(cssVariables['--reward-text-gradient']).color1,
-                          e.target.value,
-                          parseGradient(cssVariables['--reward-text-gradient']).direction
-                        )}
-                      />
-                    </div>
+                  <div className="direction-select">
+                    <span>Yön:</span>
+                    <select
+                      value={parseGradient(cssVariables['--roller-container-bg']).direction}
+                      onChange={(e) => handleGradientChange(
+                        '--roller-container-bg',
+                        parseGradient(cssVariables['--roller-container-bg']).color1,
+                        parseGradient(cssVariables['--roller-container-bg']).color2,
+                        e.target.value
+                      )}
+                    >
+                      <option value="0deg">Yukarı</option>
+                      <option value="45deg">Sağ Üst</option>
+                      <option value="90deg">Sağ</option>
+                      <option value="135deg">Sağ Alt</option>
+                      <option value="180deg">Aşağı</option>
+                      <option value="225deg">Sol Alt</option>
+                      <option value="270deg">Sol</option>
+                      <option value="315deg">Sol Üst</option>
+                    </select>
                   </div>
-
                 </div>
               </div>
-              <div className="color-picker-group">
-                <label style={{color: 'white'}}>Ödül Metni</label>
-                <input type='text' style={{width: '100%'}} className='form-control' name='rewardtitle' value={rewardTitle} onChange={(e) => setRewardTitle(e.target.value)} />
-                <button className='btn btn-primary' onClick={handleSaveRewardTitle}>Kaydet</button>
+              {/* Gösterge Çizgisi Rengi ayarı */}
+              <div className="css-variable-editor">
+                <label>Gösterge Çizgisi Rengi</label>
+                <input
+                  type="color"
+                  value={cssVariables['--roller-indicator-bg'] || '#d16266'}
+                  onChange={(e) => handleVariableChange('--roller-indicator-bg', e.target.value)}
+                />
+              </div>
+              {/* Kutu (item) renk ayarları */}
+              <div className="css-variable-editor">
+                <label>Kutu Yazı Rengi</label>
+                <input
+                  type="color"
+                  value={cssVariables['--roller-item-color'] || '#fff'}
+                  onChange={(e) => handleVariableChange('--roller-item-color', e.target.value)}
+                />
+              </div>
+              <div className="css-variable-editor">
+                <label>Kutu Kenarlık Rengi</label>
+                <input
+                  type="color"
+                  value={cssVariables['--roller-item-border'] || '#70677c'}
+                  onChange={(e) => handleVariableChange('--roller-item-border', e.target.value)}
+                />
+              </div>
+              <div className="css-variable-editor gradient-editor">
+                <label>Kutu Arka Plan (Gradient)</label>
+                <div className="gradient-controls">
+                  <div className="color-picker-group">
+                    <span>Renk 1:</span>
+                    <input
+                      type="color"
+                      value={parseGradient(cssVariables['--roller-item-bg']).color1}
+                      onChange={(e) => handleGradientChange(
+                        '--roller-item-bg',
+                        e.target.value,
+                        parseGradient(cssVariables['--roller-item-bg']).color2,
+                        parseGradient(cssVariables['--roller-item-bg']).direction
+                      )}
+                    />
+                  </div>
+                  <div className="color-picker-group">
+                    <span>Renk 2:</span>
+                    <input
+                      type="color"
+                      value={parseGradient(cssVariables['--roller-item-bg']).color2}
+                      onChange={(e) => handleGradientChange(
+                        '--roller-item-bg',
+                        parseGradient(cssVariables['--roller-item-bg']).color1,
+                        e.target.value,
+                        parseGradient(cssVariables['--roller-item-bg']).direction
+                      )}
+                    />
+                  </div>
+                  <div className="direction-select">
+                    <span>Yön:</span>
+                    <select
+                      value={parseGradient(cssVariables['--roller-item-bg']).direction}
+                      onChange={(e) => handleGradientChange(
+                        '--roller-item-bg',
+                        parseGradient(cssVariables['--roller-item-bg']).color1,
+                        parseGradient(cssVariables['--roller-item-bg']).color2,
+                        e.target.value
+                      )}
+                    >
+                      <option value="0deg">Yukarı</option>
+                      <option value="45deg">Sağ Üst</option>
+                      <option value="90deg">Sağ</option>
+                      <option value="135deg">Sağ Alt</option>
+                      <option value="180deg">Aşağı</option>
+                      <option value="225deg">Sol Alt</option>
+                      <option value="270deg">Sol</option>
+                      <option value="315deg">Sol Üst</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div className="css-variable-editor">
+                <label>Kırmızı Kenarlık Rengi</label>
+                <input
+                  type="color"
+                  value={cssVariables['--roller-item-red-border'] || '#EB4B4B'}
+                  onChange={(e) => handleVariableChange('--roller-item-red-border', e.target.value)}
+                />
               </div>
             </div>
           </div>

@@ -16,7 +16,6 @@ export default function UserMiddleware() {
   const [isUser, setIsUser] = useState(false);
   const [loading, setLoading] = useState(true);
   const [loadedCss, setLoadedCss] = useState(null);
-  const [rewards, setRewards] = useState(null);
 
   useEffect(() => {
     const Control = async () => {
@@ -39,7 +38,6 @@ export default function UserMiddleware() {
             rarity: item.rarity || 'blue',
           }));
         }
-        setRewards(rewardList);
 
         const cssResponse = await getCss(response.spinWheelId);
         if (cssResponse && typeof cssResponse === 'object' && Object.keys(cssResponse).length > 0) {
@@ -75,8 +73,7 @@ export default function UserMiddleware() {
           <div className='general-container'>
             <img src={config.imgUrl} className='logo' alt='' />
             <h1 className="title">
-              <span style={{ color: 'var(--title-color, #FFFFFF)' }}>Kazı</span>
-              <span style={{ color: 'var(--title-span-color, #FFCC00)' }}> & Kazan!</span>
+              <span style={{ color: 'var(--title-color, #FFFFFF)' }}>Kutu Açma</span>
             </h1>
             <OpenCase />
           </div>
