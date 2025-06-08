@@ -338,6 +338,11 @@ img {
     font-size: 0.98rem;
     padding: 7px 6px;
   }
+  .kutu-img{
+    cursor: pointer;
+    width: 350px;
+    height: 350px;
+  }
 }
 
 @media (max-width: 480px) {
@@ -354,6 +359,11 @@ img {
     min-height: 48px;
     font-size: 0.82rem;
     padding: 4px 2px;
+  }
+  .kutu-img{
+    cursor: pointer;
+    width: 250px;
+    height: 250px;
   }
 }
 
@@ -430,9 +440,16 @@ img {
 .modern-dialog .close-btn:hover {
   opacity: 1;
 }
-
+.kutu-img{
+  cursor: pointer;
+}
 /* Responsive */
 @media (max-width: 600px) {
+  .kutu-img{
+    cursor: pointer;
+    width: 300px;
+    height: 300px;
+  }
   .modern-dialog {
     padding: 18px 6px 14px 6px;
     max-width: 98vw;

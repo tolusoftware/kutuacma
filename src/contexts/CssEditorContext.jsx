@@ -15,6 +15,18 @@ const initialCssVariables = {
   '--button-border-color': '#ffd700',
   '--button-shadow': '0 4px 24px #0004, 0 0 16px #ffd70055',
 
+  // Hak talep et butonu
+  '--rights-button-background': 'linear-gradient(135deg, #4CAF50 0%, #45a049 100%)',
+  '--rights-button-text-color': '#FFFFFF',
+  '--rights-button-icon-color': '#FFFFFF',
+  '--rights-button-border-color': '#45a049',
+
+  // Geçmiş butonu
+  '--history-button-background': 'linear-gradient(135deg, #2196F3 0%, #1976D2 100%)',
+  '--history-button-text-color': '#FFFFFF',
+  '--history-button-icon-color': '#FFFFFF',
+  '--history-button-border-color': '#1976D2',
+
   // Info butonu
   '--info-btn-bg': 'linear-gradient(135deg, #23243a 60%, #191726 100%)',
   '--info-btn-color': '#ffd700',

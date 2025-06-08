@@ -20,7 +20,7 @@ export default function CssEditor() {
 
   const { id: userId, getScratchConfig } = useContext(UserContext);
 
-  const [dialog, setDialog] = useState({ isOpen: false, message: '' });
+  const [dialog, setDialog] = useState({ isOpen: false, message: '', actionButtonText: '' });
 
 
   // Accordion state
@@ -51,6 +51,15 @@ export default function CssEditor() {
     // API'ye gönderilecek JSON formatı
     try {
       const response = await setCss(cssVariables, getScratchConfig.spinWheelId); // setCss API'sini çağırın
+
+      if (response.status === false) {
+        setDialog({
+          isOpen: true,
+          message: 'CSS ayarları kaydedilemedi. Lütfen tekrar deneyin.',
+          actionButtonText:"Tamam"
+        });
+        return;
+      }
 
       if (response.success) {
         setDialog({
@@ -409,7 +418,7 @@ export default function CssEditor() {
                         </div>
 
                         {/* Kazıma Hakkı Ayarları */}
-                        <h4>Kazıma Hakkı</h4>
+                        <h4>Kutu Açma Hakkı</h4>
                         <div className="css-variable-editor">
                           <label>Arka Plan</label>
                           <input
@@ -696,45 +705,7 @@ export default function CssEditor() {
                           />
                         </div>
                         */}
-                        <div className="css-variable-editor gradient-editor">
-                          <label>Oynamaya Başla Butonu Arka Plan</label>
-                          <div className="gradient-controls">
-                            <div className="color-picker-group">
-                              <span>Renk 1:</span>
-                              <input
-                                type="color"
-                                value={parseGradient(cssVariables['--history-button-bg']).color1}
-                                onChange={(e) => handleGradientChange(
-                                  '--history-button-bg',
-                                  e.target.value,
-                                  parseGradient(cssVariables['--history-button-bg']).color2,
-                                  parseGradient(cssVariables['--history-button-bg']).direction
-                                )}
-                              />
-                            </div>
-                            <div className="color-picker-group">
-                              <span>Renk 2:</span>
-                              <input
-                                type="color"
-                                value={parseGradient(cssVariables['--history-button-bg']).color2}
-                                onChange={(e) => handleGradientChange(
-                                  '--history-button-bg',
-                                  parseGradient(cssVariables['--history-button-bg']).color1,
-                                  e.target.value,
-                                  parseGradient(cssVariables['--history-button-bg']).direction
-                                )}
-                              />
-                            </div>
-                          </div>
-                        </div>
-                        <div className="css-variable-editor">
-                          <label>Oynamaya Başla Butonu Yazı Rengi</label>
-                          <input
-                            type="color"
-                            value={cssVariables['--history-button-text'] || '#fff'}
-                            onChange={(e) => handleVariableChange('--history-button-text', e.target.value)}
-                          />
-                        </div>
+                 
                         <div className="css-variable-editor">
                           <label>Öğe Arka Plan</label>
                           <input

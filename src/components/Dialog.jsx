@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Dialog = ({ isOpen, onClose, message, type = 'success', actionButtonText = 'Ödülü Al!', title, children }) => {
+const Dialog = ({ isOpen, onClose, message, type = 'success', actionButtonText = '', title, children }) => {
     if (!isOpen) return null;
 
     const getIcon = () => {
@@ -87,7 +87,7 @@ const Dialog = ({ isOpen, onClose, message, type = 'success', actionButtonText =
                             border: '2px solid var(--dialog-action-button-border, #FFA500)'
                         }}
                     >
-                        {actionButtonText}
+                        {actionButtonText || 'Ödülü Al!'}
                     </button>
                 )}
             </div>

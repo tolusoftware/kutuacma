@@ -148,7 +148,7 @@ export default function OpenCase() {
     <div>
       {!opened ? (
         <div>
-          <img src="/kutu.png" alt="Kutu" onClick={() => setOpened(true)} style={{ cursor: "pointer" }} />
+          <img src="/kutu.png" alt="Kutu" onClick={() => setOpened(true)} className='kutu-img' style={{ cursor: "pointer" }} />
         </div>
       ) : (
         <>
