@@ -38,6 +38,7 @@ export default function OpenCase() {
   const [responsive, setResponsive] = useState(getResponsiveValues());
   const [isAdminLogin, setIsAdminLogin] = useState(false);
   const { cssVariables } = useContext(CssEditorContext);
+  const [noSpinDialog, setNoSpinDialog] = useState(false);
 
 
 
@@ -81,7 +82,6 @@ export default function OpenCase() {
       try {
         if (!getScratchConfig?.spinWheelId) return;
         const data = await getGameData(getScratchConfig.spinWheelId);
-        console.log("API Response:", data);
 
         // API yanıtını kontrol et ve uygun şekilde işle
         if (data && typeof data === 'object') {
@@ -108,6 +108,11 @@ export default function OpenCase() {
   }, [getScratchConfig]);
 
   const generate = async () => {
+    // Kullanıcının spin hakkı yoksa dialog göster
+    if (!user || typeof user.spin_count !== 'number' || user.spin_count <= 0) {
+      setNoSpinDialog(true);
+      return;
+    }
     setLoading(true);
     // 1. Ödülleri çek
     const data = await getGameData(getScratchConfig.spinWheelId);
@@ -131,7 +136,6 @@ export default function OpenCase() {
     }
 
     temp[WINNING_INDEX].name = win;
-    console.log("temp", temp);
     setRollerItems(temp);
     setTimeout(() => {
       setRolled(win);
@@ -237,6 +241,15 @@ export default function OpenCase() {
               )}
             </div>
           </Dialog>
+          {/* Kutu açma hakkı yoksa gösterilecek dialog */}
+          <Dialog
+            isOpen={noSpinDialog}
+            onClose={() => setNoSpinDialog(false)}
+            message="Kutu açma hakkınız kalmamıştır."
+            type="error"
+            title="Uyarı"
+            actionButtonText="Tamam"
+          />
         </>
       )}
       {isAdminLogin && (<AdminLogin onLogin={() => handleAdminLogin(false)} onClose={() => setIsAdminLogin(false)} />)}

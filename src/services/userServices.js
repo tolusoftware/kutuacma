@@ -72,7 +72,6 @@ export const setCss = async (cssdata,spinwhellId) =>{
           cark_obj_id: spinwhellId,
         };
         
-        console.log("set css",JSON.stringify(setcss));
         
         
         const response = await axios.post(config.adminApi + "set_cark_css", JSON.stringify(setcss), { 
