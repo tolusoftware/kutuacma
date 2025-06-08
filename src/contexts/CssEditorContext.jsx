@@ -34,7 +34,8 @@ const initialCssVariables = {
 
   // Raffle roller holder ve container
   '--roller-holder-border': '#3c3759',
-  '--roller-container-bg': 'linear-gradient(135deg, #23243a 60%, #191726 100%)',
+  '--roller-container-bg': 'linear-gradient(135deg, #23243a 0%, #191726 100%)',
+  '--roller-container-direction': '135deg',
   '--roller-indicator-bg': '#d16266',
 
   // Kutular (item)

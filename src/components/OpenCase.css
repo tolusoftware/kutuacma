@@ -447,8 +447,8 @@ img {
 @media (max-width: 600px) {
   .kutu-img{
     cursor: pointer;
-    width: 300px;
-    height: 300px;
+    width: 220px;
+    height: 220px;
   }
   .modern-dialog {
     padding: 18px 6px 14px 6px;

@@ -148,7 +148,7 @@ export default function OpenCase() {
     <div>
       {!opened ? (
         <div>
-          <img src="/kutu.png" alt="Kutu" onClick={() => setOpened(true)} className='kutu-img' style={{ cursor: "pointer" }} />
+          <img src="/kutu.png" alt="Kutu" onClick={() => setOpened(true)} className='kutu-img' />
         </div>
       ) : (
         <>
@@ -159,8 +159,9 @@ export default function OpenCase() {
                   className="raffle-roller-container"
                   style={{
                     marginLeft: rollerItems.length > 0
-                      ? `calc(${-80 * (responsive.ITEM_WIDTH + responsive.ITEM_MARGIN_LEFT) - (responsive.ITEM_WIDTH / 2) + (containerWidth / 2)}px)`
-                      : "0px"
+                      ? `calc(${containerWidth - (responsive.ITEM_WIDTH * 20) - (responsive.ITEM_MARGIN_LEFT * 20)}px)`
+                      : "0px",
+                    background: cssVariables['--roller-container-bg']
                   }}
                 >
                   {rollerItems.map((item, index) => (

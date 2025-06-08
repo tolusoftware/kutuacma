@@ -87,6 +87,10 @@ export default function CssEditor() {
   const handleGradientChange = (variableName, color1, color2, direction = '135deg') => {
     const gradientValue = `linear-gradient(${direction}, ${color1}, ${color2})`
     updateCssVariable(variableName, gradientValue)
+    // Eğer rollers container için gradient değişiyorsa, yön değişkenini de güncelle
+    if (variableName === '--roller-container-bg') {
+      updateCssVariable('--roller-container-direction', direction)
+    }
   }
 
   // Gradient değerlerini renklerine ayırma fonksiyonu
@@ -1027,7 +1031,7 @@ export default function CssEditor() {
                         '--roller-container-bg',
                         e.target.value,
                         parseGradient(cssVariables['--roller-container-bg']).color2,
-                        parseGradient(cssVariables['--roller-container-bg']).direction
+                        cssVariables['--roller-container-direction']
                       )}
                     />
                   </div>
@@ -1040,11 +1044,41 @@ export default function CssEditor() {
                         '--roller-container-bg',
                         parseGradient(cssVariables['--roller-container-bg']).color1,
                         e.target.value,
-                        parseGradient(cssVariables['--roller-container-bg']).direction
+                        cssVariables['--roller-container-direction']
                       )}
                     />
                   </div>
-                 
+                  <div className="gradient-direction">
+                    <span>Yön:</span>
+                    <select
+                      value={cssVariables['--roller-container-direction']}
+                      onChange={(e) => {
+                        const direction = e.target.value;
+                        handleVariableChange('--roller-container-direction', direction);
+                        handleGradientChange(
+                          '--roller-container-bg',
+                          parseGradient(cssVariables['--roller-container-bg']).color1,
+                          parseGradient(cssVariables['--roller-container-bg']).color2,
+                          direction
+                        );
+                      }}
+                      style={{
+                        padding: '8px 12px',
+                        borderRadius: '8px',
+                        border: '2px solid #3c3759',
+                        backgroundColor: '#23243a',
+                        color: '#fff',
+                        fontSize: '14px',
+                        cursor: 'pointer',
+                        outline: 'none',
+                        transition: 'all 0.3s ease',
+                        marginLeft: '10px'
+                      }}
+                    >
+                      <option value="0deg">Sola</option>
+                      <option value="180deg">Sağa</option>
+                    </select>
+                  </div>
                 </div>
               </div>
               {/* Gösterge Çizgisi Rengi ayarı */}

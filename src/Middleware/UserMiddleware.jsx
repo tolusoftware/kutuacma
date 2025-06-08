@@ -73,7 +73,7 @@ export default function UserMiddleware() {
           <div className='general-container'>
             <img src={config.imgUrl} className='logo' alt='' />
             <h1 className="title">
-              <span style={{ color: 'var(--title-color, #FFFFFF)' }}>Kutu Açma</span>
+              <span style={{ color: 'var(--title-color, #FFFFFF)' }}>KUTU AÇMA</span>
             </h1>
             <OpenCase />
           </div>
