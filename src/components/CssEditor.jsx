@@ -278,32 +278,18 @@ export default function CssEditor() {
                             onChange={(e) => handleVariableChange('--button-border-color', e.target.value)}
                           />
                         </div>
-                        <div className="css-variable-editor">
-                          <label>Oyun Başlat Butonu Hover Kenar Rengi</label>
-                          <input
-                            type="color"
-                            value={cssVariables['--button-hover-border-color']}
-                            onChange={(e) => handleVariableChange('--button-hover-border-color', e.target.value)}
-                          />
-                        </div>
+                       
 
                         {/* Title Ayarları */}
                         <div className="css-variable-editor">
-                          <label>Kazı Başlık Rengi</label>
+                          <label>Kutu Açma Başlık Rengi</label>
                           <input
                             type="color"
                             value={cssVariables['--title-color'] || '#FFFFFF'}
                             onChange={(e) => handleVariableChange('--title-color', e.target.value)}
                           />
                         </div>
-                        <div className="css-variable-editor">
-                          <label>Kazan Başlık Rengi</label>
-                          <input
-                            type="color"
-                            value={cssVariables['--title-span-color'] || '#FFCC00'}
-                            onChange={(e) => handleVariableChange('--title-span-color', e.target.value)}
-                          />
-                        </div>
+                       
                         {/* Shadow is not a color, leaving it out for color picker requests */}
                         {/* <div className="css-variable-editor">
                           <label>Başlık Gölge</label>
@@ -314,14 +300,7 @@ export default function CssEditor() {
                           />
                         </div> */}
 
-                        <div className="css-variable-editor">
-                          <label>Oyun Başlat Butonu Shadow</label>
-                          <input
-                            type="color"
-                            value={cssVariables['--button-shadow-color'] || '#ffd700'}
-                            onChange={(e) => handleVariableChange('--button-shadow-color', e.target.value)}
-                          />
-                        </div>
+                       
 
                         <div className="css-variable-editor">
                           <label>Info Butonu Arka Plan</label>
@@ -699,6 +678,7 @@ export default function CssEditor() {
                             onChange={(e) => handleVariableChange('--history-text-color', e.target.value)}
                           />
                         </div>
+                        {/** 
                         <div className="css-variable-editor">
                           <label>Spinner Rengi</label>
                           <input
@@ -715,6 +695,7 @@ export default function CssEditor() {
                             onChange={(e) => handleVariableChange('--history-empty-icon-color', e.target.value)}
                           />
                         </div>
+                        */}
                         <div className="css-variable-editor gradient-editor">
                           <label>Oynamaya Başla Butonu Arka Plan</label>
                           <div className="gradient-controls">
@@ -901,7 +882,7 @@ export default function CssEditor() {
                             onChange={(e) => handleVariableChange('--dialog-close-button-hover', e.target.value)}
                           />
                         </div>
-
+{/**
                         <div className="css-variable-editor">
                           <label>Dialog Genişliği</label>
                           <input
@@ -961,7 +942,7 @@ export default function CssEditor() {
                             placeholder="600"
                           />
                         </div>
-
+                        */}
                         {/* Dialog Durum Renkleri */}
                         <h4>Dialog Durum Renkleri</h4>
                         <div className="css-variable-editor">
@@ -1003,38 +984,10 @@ export default function CssEditor() {
                                 )}
                               />
                             </div>
-                            <div className="direction-select">
-                              <span>Yön:</span>
-                              <select
-                                value={parseGradient(cssVariables['--dialog-action-button-background']).direction}
-                                onChange={(e) => handleGradientChange(
-                                  '--dialog-action-button-background',
-                                  parseGradient(cssVariables['--dialog-action-button-background']).color1,
-                                  parseGradient(cssVariables['--dialog-action-button-background']).color2,
-                                  e.target.value
-                                )}
-                              >
-                                <option value="0deg">Yukarı</option>
-                                <option value="45deg">Sağ Üst</option>
-                                <option value="90deg">Sağ</option>
-                                <option value="135deg">Sağ Alt</option>
-                                <option value="180deg">Aşağı</option>
-                                <option value="225deg">Sol Alt</option>
-                                <option value="270deg">Sol</option>
-                                <option value="315deg">Sol Üst</option>
-                              </select>
-                            </div>
+                            
                           </div>
                         </div>
-                        <div className="css-variable-editor">
-                          <label>Dialog Buton Shadow</label>
-                          <input
-                            type="text"
-                            value={cssVariables['--dialog-action-button-shadow'] || '0 4px 12px rgba(52, 211, 153, 0.2)'}
-                            onChange={(e) => handleVariableChange('--dialog-action-button-shadow', e.target.value)}
-                            placeholder="0 4px 12px rgba(52, 211, 153, 0.2)"
-                          />
-                        </div>
+                        
                         <div className="css-variable-editor">
                           <label>Dialog Buton Yazı Rengi</label>
                           <input
@@ -1120,27 +1073,7 @@ export default function CssEditor() {
                       )}
                     />
                   </div>
-                  <div className="direction-select">
-                    <span>Yön:</span>
-                    <select
-                      value={parseGradient(cssVariables['--roller-container-bg']).direction}
-                      onChange={(e) => handleGradientChange(
-                        '--roller-container-bg',
-                        parseGradient(cssVariables['--roller-container-bg']).color1,
-                        parseGradient(cssVariables['--roller-container-bg']).color2,
-                        e.target.value
-                      )}
-                    >
-                      <option value="0deg">Yukarı</option>
-                      <option value="45deg">Sağ Üst</option>
-                      <option value="90deg">Sağ</option>
-                      <option value="135deg">Sağ Alt</option>
-                      <option value="180deg">Aşağı</option>
-                      <option value="225deg">Sol Alt</option>
-                      <option value="270deg">Sol</option>
-                      <option value="315deg">Sol Üst</option>
-                    </select>
-                  </div>
+                 
                 </div>
               </div>
               {/* Gösterge Çizgisi Rengi ayarı */}
@@ -1198,27 +1131,7 @@ export default function CssEditor() {
                       )}
                     />
                   </div>
-                  <div className="direction-select">
-                    <span>Yön:</span>
-                    <select
-                      value={parseGradient(cssVariables['--roller-item-bg']).direction}
-                      onChange={(e) => handleGradientChange(
-                        '--roller-item-bg',
-                        parseGradient(cssVariables['--roller-item-bg']).color1,
-                        parseGradient(cssVariables['--roller-item-bg']).color2,
-                        e.target.value
-                      )}
-                    >
-                      <option value="0deg">Yukarı</option>
-                      <option value="45deg">Sağ Üst</option>
-                      <option value="90deg">Sağ</option>
-                      <option value="135deg">Sağ Alt</option>
-                      <option value="180deg">Aşağı</option>
-                      <option value="225deg">Sol Alt</option>
-                      <option value="270deg">Sol</option>
-                      <option value="315deg">Sol Üst</option>
-                    </select>
-                  </div>
+                  
                 </div>
               </div>
               <div className="css-variable-editor">

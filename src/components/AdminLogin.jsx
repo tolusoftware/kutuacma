@@ -17,7 +17,6 @@ const AdminLogin = ({ onLogin, onClose }) => {
 
     try {
       const result = await adminLogin(username, password);
-      console.log("result",result);
       if (result.status === true) {
         setIsLogin(true);
         onLogin();
