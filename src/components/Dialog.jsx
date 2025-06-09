@@ -55,7 +55,6 @@ const Dialog = ({ isOpen, onClose, message, type = 'success', actionButtonText =
             <div
                 className={`dialog-content ${type}`}
                 onClick={e => e.stopPropagation()}
-                style={{ border: '1px solid var(--dialog-border-color, #FFD700)' }}
             >
                 <button className="dialog-close" onClick={onClose}>
                     <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -76,7 +75,6 @@ const Dialog = ({ isOpen, onClose, message, type = 'success', actionButtonText =
                     <button
                         className="dialog-action-button"
                         onClick={onClose}
-                        style={{ border: '2px solid var(--dialog-action-button-border, #FFA500)' }}
                     >
                         {actionButtonText || 'Ödülü Al!'}
                     </button>
