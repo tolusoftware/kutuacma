@@ -403,11 +403,11 @@ img {
 }
 
 .modern-prize-item {
-  min-width: 60px;
+  min-width: 100px;
   min-height: 60px;
   background: #f7f7fa;
   border-radius: 10px;
-  border: 1.5px solid #eb4b4b33;
+  border: 1.5px solid var(--dialog-border-color, #eb4b4b33);
   color: #23243a;
   font-size: 1.05rem;
   font-weight: 600;
@@ -421,7 +421,7 @@ img {
 .modern-prize-item:hover {
   transform: scale(1.07);
   box-shadow: 0 4px 16px #eb4b4b33;
-  border-color: #eb4b4b;
+  border-color: var(--dialog-border-color, #eb4b4b);
 }
 
 /* Kapatma butonu */

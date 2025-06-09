@@ -1624,14 +1624,13 @@
 }
 
 .dialog-content {
+  width: 500px;
   background: var(--dialog-background, rgba(255, 255, 255, 0.98));
   color: var(--dialog-text-color, #1a1a1a);
   border: none;
   border-radius: var(--dialog-border-radius, 20px);
   box-shadow: var(--dialog-shadow, 0 10px 40px rgba(0, 0, 0, 0.1));
   padding: var(--dialog-padding, 2.5rem);
-  width: var(--dialog-width, 90%);
-  max-width: var(--dialog-max-width, 380px);
   position: relative;
   animation: dialogSlideIn 1s cubic-bezier(0.68, -0.55, 0.265, 1.55);
   transform-origin: center;

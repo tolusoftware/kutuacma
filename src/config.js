@@ -36,6 +36,6 @@ const config = {
 
 
 
-const env = 'production';
+const env = 'development';
 export default config[env];
 
