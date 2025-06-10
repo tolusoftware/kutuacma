@@ -39,16 +39,17 @@ export default function OpenCase() {
   const [isAdminLogin, setIsAdminLogin] = useState(false);
   const { cssVariables } = useContext(CssEditorContext);
   const [noSpinDialog, setNoSpinDialog] = useState(false);
+  const [showCaseModal, setShowCaseModal] = useState(false);
 
 
 
-  const adminRoute =  () => {
+  const adminRoute = () => {
     return window.location.pathname.includes("/admin");
   }
 
   const handleAdminLogin = () => {
     setIsAdminLogin(false);
-};
+  };
 
 
   useEffect(() => {
@@ -146,116 +147,133 @@ export default function OpenCase() {
 
   return (
     <div>
-      {!opened ? (
+      {/* Blur uygulanacak ana içerik */}
+      <div style={{
+        filter: opened ? 'blur(12px)' : 'none',
+      }}>
         <div>
-          <img src="/kutu.png" alt="Kutu" onClick={() => setOpened(true)} className='kutu-img' />
+          <img
+            src="/kutu.png"
+            alt="Kutu"
+            onClick={() => {
+              setOpened(true);
+              generate();
+            }}
+            className='kutu-img'
+          />
         </div>
-      ) : (
-        <>
-          <div className="general-container">
-            <div className="raffle-roller">
-              <div className="raffle-roller-holder" ref={holderRef}>
-                <div
-                  className="raffle-roller-container"
-                  style={{
-                    marginLeft: rollerItems.length > 0
-                      ? `calc(${-80 * (responsive.ITEM_WIDTH + responsive.ITEM_MARGIN_LEFT) - (responsive.ITEM_WIDTH / 2) + (containerWidth / 2)}px)`
-                      : "0px",
-                    background: cssVariables['--roller-container-bg']
-                  }}
-                >
-                  {rollerItems.map((item, index) => (
-                    <div
-                      key={index}
-                      className={`item class_red_item ${item.winning ? "winning-item" : ""}`}
-                      style={{ display: "flex", alignItems: "center", justifyContent: "center", fontWeight: "bold", fontSize: responsive.ITEM_FONT_SIZE }}
-                    >
-                      {item.name}
-                    </div>
-                  ))}
+      </div>
+      {/* Kutu açma ekranı, blurdan etkilenmeden üstte modal gibi */}
+      {opened && !showDialog && (
+        <div className="blur-spotlight-overlay"></div>
+      )}
+      {opened && (
+        <div
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            width: '100vw',
+            height: '100vh',
+            zIndex: 1000,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            background: 'rgba(0,0,0,0.15)',
+          }}
+        >
+          <div>
+            <div className="general-container">
+              <div className="raffle-roller">
+                <div className="raffle-roller-holder" ref={holderRef}>
+                  <div
+                    className="raffle-roller-container"
+                    style={{
+                      marginLeft: rollerItems.length > 0
+                        ? `calc(${-80 * (responsive.ITEM_WIDTH + responsive.ITEM_MARGIN_LEFT) - (responsive.ITEM_WIDTH / 2) + (containerWidth / 2)}px)`
+                        : "0px",
+                      background: cssVariables['--roller-container-bg']
+                    }}
+                  >
+                    <div className="radius-border" />
+                    {rollerItems.map((item, index) => (
+                      <div
+                        key={index}
+                        className={`item class_red_item ${item.winning ? "winning-item" : ""}`}
+                        style={{ display: "flex", alignItems: "center", justifyContent: "center", fontWeight: "bold", fontSize: responsive.ITEM_FONT_SIZE }}
+                      >
+                        {item.name}
+                      </div>
+                    ))}
+                  </div>
+                  <div className="indicator-line"></div>
                 </div>
-                <div className="indicator-line"></div>
+                <div className="button-container">
+                  <button
+                    className="info-btn"
+                    onClick={() => setShowRewardsDialog(true)}
+                    style={{
+                      background: cssVariables['--info-btn-bg'],
+                      color: cssVariables['--info-btn-color'],
+                      border: `2px solid ${cssVariables['--info-btn-border']}`
+                    }}
+                  >
+                    <span style={{ color: cssVariables['--info-btn-color'], fontSize: '1.4rem', fontWeight: 'bold' }}>?</span>
+                  </button>
+                </div>
               </div>
             </div>
+            <br />
+            <Dialog
+              isOpen={showDialog}
+              onClose={() => {
+                setShowDialog(false);
+                setOpened(false);
+                setRollerItems([]);
+                setRolled("rolling");
+                setLoading(false);
+                if (user && typeof user.spin_count === 'number' && typeof setUser === 'function') {
+                  setUser({ ...user, spin_count: Math.max(0, user.spin_count - 1) });
+                }
+              }}
+              message={winReward ? `Kazandığınız ödül: ${winReward}` : ''}
+              type="win"
+              actionButtonText="Ödülü Al!"
+              title="Tebrikler!"
+            />
+            <Dialog
+              isOpen={showRewardsDialog}
+              onClose={() => setShowRewardsDialog(false)}
+              type="rewards"
+              title="Ödüller"
+              variant="small"
+            >
+              <div className="modern-prize-list">
+                {otherrewards && otherrewards.length > 0 ? (
+                  otherrewards.map((reward, i) => (
+                    <div key={i} className="modern-prize-item">
+                      {reward.name || reward}
+                    </div>
+                  ))
+                ) : (
+                  <div>Ödül bulunamadı</div>
+                )}
+              </div>
+            </Dialog>
+            {/* Kutu açma hakkı yoksa gösterilecek dialog */}
+            <Dialog
+              isOpen={noSpinDialog}
+              onClose={() => setNoSpinDialog(false)}
+              message="Kutu açma hakkınız kalmamıştır."
+              type="error"
+              title="Uyarı"
+              actionButtonText="Tamam"
+            />
           </div>
-          <center>
-            <div className="button-container">
-              <button
-                className="open-case-btn"
-                onClick={generate}
-                disabled={loading}
-                style={{
-                  background: cssVariables['--button-gradient'],
-                  color: cssVariables['--button-text-color'],
-                  border: `2px solid ${cssVariables['--button-border-color']}`
-                }}
-              >
-                {loading ? "Yükleniyor..." : "Başla"}
-              </button>
-              <button
-                className="info-btn"
-                onClick={() => setShowRewardsDialog(true)}
-                style={{
-                  background: cssVariables['--info-btn-bg'],
-                  color: cssVariables['--info-btn-color'],
-                  border: `2px solid ${cssVariables['--info-btn-border']}`
-                }}
-              >
-                <span style={{ color: cssVariables['--info-btn-color'], fontSize: '1.4rem', fontWeight: 'bold' }}>?</span>
-              </button>
-            </div>
-          </center>
-          <br />
-          <Dialog
-            isOpen={showDialog}
-            onClose={() => {
-              setShowDialog(false);
-              setOpened(false);
-              setRollerItems([]);
-              setRolled("rolling");
-              setLoading(false);
-              if (user && typeof user.spin_count === 'number' && typeof setUser === 'function') {
-                setUser({ ...user, spin_count: Math.max(0, user.spin_count - 1) });
-              }
-            }}
-            message={winReward ? `Kazandığınız ödül: ${winReward}` : ''}
-            type="win"
-            actionButtonText="Ödülü Al!"
-            title="Tebrikler!"
-          />
-          <Dialog
-            isOpen={showRewardsDialog}
-            onClose={() => setShowRewardsDialog(false)}
-            type="rewards"
-            title="Ödüller"
-            variant="small"
-          >
-            <div className="modern-prize-list">
-              {otherrewards && otherrewards.length > 0 ? (
-                otherrewards.map((reward, i) => (
-                  <div key={i} className="modern-prize-item">
-                    {reward.name || reward}
-                  </div>
-                ))
-              ) : (
-                <div>Ödül bulunamadı</div>
-              )}
-            </div>
-          </Dialog>
-          {/* Kutu açma hakkı yoksa gösterilecek dialog */}
-          <Dialog
-            isOpen={noSpinDialog}
-            onClose={() => setNoSpinDialog(false)}
-            message="Kutu açma hakkınız kalmamıştır."
-            type="error"
-            title="Uyarı"
-            actionButtonText="Tamam"
-          />
-        </>
+        </div>
       )}
       {isAdminLogin && (<AdminLogin onLogin={() => handleAdminLogin(false)} onClose={() => setIsAdminLogin(false)} />)}
       {isLogin && (<CssEditor />)}
-
     </div>
   );
 }

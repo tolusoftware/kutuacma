@@ -6,7 +6,6 @@ body {
 }
 
 .raffle-roller {
-  height: 100px;
   position: relative;
   margin: 60px auto 30px auto;
   width: 100%;
@@ -466,3 +465,32 @@ img {
 }
 
 
+.blur-spotlight-overlay {
+  position: fixed;
+  top: 0; left: 0; width: 100vw; height: 100vh;
+  z-index: 1100;
+  pointer-events: none;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  /* Ortada net bir daire bırakır */
+  mask-image: radial-gradient(circle 120px at 50% 50%, transparent 120px, black 140px);
+  border: 1px solid #ff4b4b;
+  -webkit-mask-image: radial-gradient(circle 120px at 50% 50%, transparent 120px, black 140px);
+  background: rgba(0,0,0,0.01);
+}
+
+/* Tablet */
+@media (max-width: 900px) {
+  .blur-spotlight-overlay {
+    mask-image: radial-gradient(circle 90px at 50% 50%, transparent 90px, black 110px);
+    -webkit-mask-image: radial-gradient(circle 90px at 50% 50%, transparent 90px, black 110px);
+  }
+}
+
+/* Mobil */
+@media (max-width: 600px) {
+  .blur-spotlight-overlay {
+    mask-image: radial-gradient(circle 60px at 50% 50%, transparent 60px, black 80px);
+    -webkit-mask-image: radial-gradient(circle 60px at 50% 50%, transparent 60px, black 80px);
+  }
+}
