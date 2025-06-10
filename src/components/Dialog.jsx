@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Dialog = ({ isOpen, onClose, message, type = 'success', actionButtonText = '', title, children }) => {
+const Dialog = ({ isOpen, onClose, message, type = 'success', actionButtonText = '', title, children,myclassname }) => {
     if (!isOpen) return null;
 
     const getIcon = () => {
@@ -51,7 +51,7 @@ const Dialog = ({ isOpen, onClose, message, type = 'success', actionButtonText =
     };
 
     return (
-        <div className="dialog-overlay" onClick={onClose}>
+        <div className={`dialog-overlay ${myclassname}`} onClick={onClose}>
             <div
                 className={`dialog-content ${type}`}
                 onClick={e => e.stopPropagation()}
@@ -93,13 +93,13 @@ const Dialog = ({ isOpen, onClose, message, type = 'success', actionButtonText =
             </div>
 
             <style jsx>{`
+           
                 .dialog-overlay {
                     position: absolute;
                     top: 0;
                     left: 0;
                     right: 0;
                     bottom: 0;
-                    background: rgba(0, 0, 0, 0.7);
                     display: flex;
                     justify-content: center;
                     align-items: center;
@@ -270,9 +270,9 @@ const Dialog = ({ isOpen, onClose, message, type = 'success', actionButtonText =
                 }
 
                 @media (max-width: 768px) {
-                    .dialog-overlay {
-                        position: relative;
-                    }
+                    .dialog-overlay-rewards{
+                position: relative !important;
+            }
                     .dialog-content {
                         padding: 1.5rem;
                         max-width: 320px;
@@ -297,9 +297,9 @@ const Dialog = ({ isOpen, onClose, message, type = 'success', actionButtonText =
                 }
 
                 @media (max-width: 480px) {
-                .dialog-overlay {
-                        position: relative;
-                    }
+                   .dialog-overlay-rewards{
+                position: relative !important;
+            }
                     .dialog-content {
                         padding: 1.25rem;
                         max-width: 280px;

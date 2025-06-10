@@ -39,7 +39,6 @@ export default function OpenCase() {
   const [isAdminLogin, setIsAdminLogin] = useState(false);
   const { cssVariables } = useContext(CssEditorContext);
   const [noSpinDialog, setNoSpinDialog] = useState(false);
-  const [showCaseModal, setShowCaseModal] = useState(false);
 
 
 
@@ -156,12 +155,40 @@ export default function OpenCase() {
             src="/kutu.png"
             alt="Kutu"
             onClick={() => {
+              console.log('Kutu clicked, user:', user);
+              if (!user || typeof user.spin_count !== 'number' || user.spin_count <= 0) {
+                setNoSpinDialog(true);
+                return;
+              }
               setOpened(true);
               generate();
             }}
             className='kutu-img'
           />
+
+           {/* Kutu açma hakkı yoksa gösterilecek dialog */}
+           <Dialog
+              isOpen={noSpinDialog}
+              onClose={() => setNoSpinDialog(false)}
+              message="Kutu açma hakkınız kalmamıştır."
+              type="error"
+              title="Uyarı"
+              actionButtonText="Tamam"
+            />
         </div>
+      </div>
+      <div className="button-container">
+        <button
+          className="info-btn"
+          onClick={() => setShowRewardsDialog(true)}
+          style={{
+            background: cssVariables['--info-btn-bg'],
+            color: cssVariables['--info-btn-color'],
+            border: `2px solid ${cssVariables['--info-btn-border']}`
+          }}
+        >
+          <span style={{ color: cssVariables['--info-btn-color'], fontSize: '1.4rem', fontWeight: 'bold' }}>?</span>
+        </button>
       </div>
       {/* Kutu açma ekranı, blurdan etkilenmeden üstte modal gibi */}
       {opened && !showDialog && (
@@ -208,23 +235,11 @@ export default function OpenCase() {
                   </div>
                   <div className="indicator-line"></div>
                 </div>
-                <div className="button-container">
-                  <button
-                    className="info-btn"
-                    onClick={() => setShowRewardsDialog(true)}
-                    style={{
-                      background: cssVariables['--info-btn-bg'],
-                      color: cssVariables['--info-btn-color'],
-                      border: `2px solid ${cssVariables['--info-btn-border']}`
-                    }}
-                  >
-                    <span style={{ color: cssVariables['--info-btn-color'], fontSize: '1.4rem', fontWeight: 'bold' }}>?</span>
-                  </button>
-                </div>
               </div>
             </div>
             <br />
             <Dialog
+              myclassname="dialog-overlay-rewards"
               isOpen={showDialog}
               onClose={() => {
                 setShowDialog(false);
@@ -241,37 +256,29 @@ export default function OpenCase() {
               actionButtonText="Ödülü Al!"
               title="Tebrikler!"
             />
-            <Dialog
-              isOpen={showRewardsDialog}
-              onClose={() => setShowRewardsDialog(false)}
-              type="rewards"
-              title="Ödüller"
-              variant="small"
-            >
-              <div className="modern-prize-list">
-                {otherrewards && otherrewards.length > 0 ? (
-                  otherrewards.map((reward, i) => (
-                    <div key={i} className="modern-prize-item">
-                      {reward.name || reward}
-                    </div>
-                  ))
-                ) : (
-                  <div>Ödül bulunamadı</div>
-                )}
-              </div>
-            </Dialog>
-            {/* Kutu açma hakkı yoksa gösterilecek dialog */}
-            <Dialog
-              isOpen={noSpinDialog}
-              onClose={() => setNoSpinDialog(false)}
-              message="Kutu açma hakkınız kalmamıştır."
-              type="error"
-              title="Uyarı"
-              actionButtonText="Tamam"
-            />
+           
           </div>
         </div>
       )}
+      <Dialog
+        isOpen={showRewardsDialog}
+        onClose={() => setShowRewardsDialog(false)}
+        type="rewards"
+        title="Ödüller"
+        variant="small"
+      >
+        <div className="modern-prize-list">
+          {otherrewards && otherrewards.length > 0 ? (
+            otherrewards.map((reward, i) => (
+              <div key={i} className="modern-prize-item">
+                {reward.name || reward}
+              </div>
+            ))
+          ) : (
+            <div>Ödül bulunamadı</div>
+          )}
+        </div>
+      </Dialog>
       {isAdminLogin && (<AdminLogin onLogin={() => handleAdminLogin(false)} onClose={() => setIsAdminLogin(false)} />)}
       {isLogin && (<CssEditor />)}
     </div>
